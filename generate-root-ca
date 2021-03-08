@@ -1,0 +1,25 @@
+#/bin/sh
+
+cat <<EOF
+WARNING
+*******************************************************************
+Regenerating and committing a new root certificate will require all
+developers to reconfigure their development environments and all
+devices used for development. Regenerating the root certificate is
+usually not required.
+
+If you understand these implications and wish to continue, type
+CONTINUE and press enter
+*******************************************************************
+EOF
+
+read -p "> " cont
+if [ "$cont" != "CONTINUE" ]; then
+  exit 1
+fi
+
+echo "Generating the root key"
+openssl genrsa -out ca.key 4096
+
+echo "Generating the root certificate"
+openssl req -key ca.key -new -x509 -days 365000 -sha256 -extensions v3_ca -out ca.crt -config root.conf

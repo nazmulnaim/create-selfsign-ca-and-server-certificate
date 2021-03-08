@@ -1,0 +1,15 @@
+#/bin/sh
+
+echo "Generating files required by openssl"
+echo 1000 > serial
+> certs.txt
+> certs.txt.attr
+
+echo "Creating server key"
+openssl genrsa -out server.key 2048
+
+echo "Creating the server certificate signing request"
+openssl req -key server.key -new -sha256 -out server.csr -batch -config server.conf
+
+echo "Creating the server certificate"
+openssl ca -batch -days 730 -notext -md sha256 -in server.csr -out server.crt -config server.conf -extfile ext.conf
